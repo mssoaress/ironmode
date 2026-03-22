@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#080808">
+<title>IronMode</title>
+<link rel="stylesheet" href="css/design.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader"><div class="loader-spin"></div><div class="loader-txt" id="load-msg">Carregando...</div></div>
+
+<!-- AUTH -->
+<div id="auth">
+  <div class="auth-wrap">
+    <div class="auth-logo">Iron<span>Mode</span></div>
+    <div class="auth-box" id="auth-card"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="brand">Iron<span class="brand-dot">Mode</span></div>
+    <button class="av-btn" id="av-btn" onclick="nav('profile')">?</button>
+  </div>
+
+  <!-- SCREENS -->
+  <div class="app-body">
+
+    <!-- HOME -->
+    <div class="scr on" id="scr-home">
+      <div class="pg-title" id="g-title">Carregando...</div>
+      <div class="pg-sub"  id="g-sub">—</div>
+      <div class="stats-row">
+        <div class="stat-box"><span class="stat-ic">🏋️</span><div class="stat-v" id="s-month">0</div><div class="stat-l">este mês</div></div>
+        <div class="stat-box"><span class="stat-ic">⏱️</span><div class="stat-v" id="s-time">0<span class="stat-u">h</span></div><div class="stat-l">tempo total</div></div>
+        <div class="stat-box"><span class="stat-ic">🔥</span><div class="stat-v" id="s-streak">0</div><div class="stat-l">sequência</div></div>
+      </div>
+      <div class="sec" style="padding-top:18px;">frequência</div>
+      <div class="hm-wrap">
+        <div class="hm-card">
+          <div class="hm-grid" id="hm-grid"></div>
+          <div class="hm-foot">
+            <span class="hm-lbl" id="hm-lbl">—</span>
+            <div class="hm-leg">
+              <span>menos</span>
+              <div class="hm-leg-dots">
+                <div class="hm-dot" style="background:var(--s4)"></div>
+                <div class="hm-dot" style="background:rgba(57,224,122,0.15)"></div>
+                <div class="hm-dot" style="background:rgba(57,224,122,0.4)"></div>
+                <div class="hm-dot" style="background:var(--g)"></div>
+              </div>
+              <span>mais</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sec">próximo treino</div>
+      <div id="home-next"></div>
+      <div class="sec">todas as fichas</div>
+      <div id="home-all"></div>
+      <div style="height:10px;"></div>
+    </div>
+
+    <!-- FICHAS -->
+    <div class="scr" id="scr-plans">
+      <div class="pg-title">Fichas</div>
+      <div class="pg-sub" id="plans-ct">—</div>
+      <div id="plans-list"></div>
+      <div style="padding:0 20px 8px;">
+        <button class="btn btn-g" style="margin-bottom:8px;" onclick="openNewPlan()">+ Nova ficha</button>
+        <button class="btn btn-d" style="margin-bottom:20px;" onclick="openCustomEx()">🎯 Exercícios personalizados</button>
+      </div>
+    </div>
+
+    <!-- SESSION -->
+    <div class="scr" id="scr-session"><div id="sess-c"></div></div>
+
+    <!-- HISTÓRICO -->
+    <div class="scr" id="scr-history">
+      <div class="pg-title">Histórico</div>
+      <div class="pg-sub">todos os treinos registrados</div>
+      <div class="hist-list" id="hist-list"></div>
+    </div>
+
+    <!-- EVOLUÇÃO -->
+    <div class="scr" id="scr-progress">
+      <div class="pg-title">Evolução</div>
+      <div class="pg-sub">progresso e records pessoais</div>
+      <div id="prog-c"></div>
+    </div>
+
+    <!-- PERFIL -->
+    <div class="scr" id="scr-profile">
+      <div class="pg-title">Perfil</div>
+      <div class="pg-sub">suas informações</div>
+      <div id="prof-c"></div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bnav">
+    <button class="ni on" id="n-home"     onclick="nav('home')">    <span class="n-ic">⊞</span><span class="n-lb">Início</span></button>
+    <button class="ni"    id="n-plans"    onclick="nav('plans')">   <span class="n-ic">≡</span><span class="n-lb">Fichas</span></button>
+    <button class="ni"    id="n-history"  onclick="nav('history')"> <span class="n-ic">◷</span><span class="n-lb">Histórico</span></button>
+    <button class="ni"    id="n-progress" onclick="nav('progress')"><span class="n-ic">↑</span><span class="n-lb">Evolução</span></button>
+    <button class="ni"    id="n-profile"  onclick="nav('profile')"> <span class="n-ic">○</span><span class="n-lb">Perfil</span></button>
+  </nav>
+
+</div>
+
+<!-- ══ MODAL: NOVA FICHA ══ -->
+<div class="ov" id="ov-newplan">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Nova ficha</div>
+    <div class="modal-sub">configure seu treino</div>
+    <div class="field"><label class="lbl">Nome da ficha</label><input class="inp" id="np-name" placeholder="ex: Treino A — Peito & Tríceps"></div>
+    <div class="g2">
+      <div class="field"><label class="lbl">Dia</label>
+        <select class="inp" id="np-day"><option value="Segunda">Segunda</option><option value="Terça">Terça</option><option value="Quarta">Quarta</option><option value="Quinta">Quinta</option><option value="Sexta">Sexta</option><option value="Sábado">Sábado</option><option value="Domingo">Domingo</option></select>
+      </div>
+      <div class="field"><label class="lbl">Tipo</label>
+        <select class="inp" id="np-type"><option value="musculacao">Musculação</option><option value="cardio">Cardio</option><option value="hiit">HIIT</option></select>
+      </div>
+    </div>
+    <div class="field"><label class="lbl">Exercícios</label>
+      <input class="pk-search" id="np-srch" placeholder="Buscar exercício..." type="text">
+      <div class="mu-filter" id="np-mf"></div>
+      <div class="pk-list" id="np-pk"></div>
+    </div>
+    <div class="sel-row" id="np-pills"></div>
+    <button class="btn btn-g" id="np-btn" onclick="savePlan()">Salvar ficha</button>
+  </div>
+</div>
+
+<!-- ══ MODAL: EDITAR FICHA ══ -->
+<div class="ov" id="ov-editplan">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Editar ficha</div>
+    <div class="modal-sub">modifique exercícios e configurações</div>
+    <input type="hidden" id="ep-id">
+    <div class="field"><label class="lbl">Nome</label><input class="inp" id="ep-name"></div>
+    <div class="g2">
+      <div class="field"><label class="lbl">Dia</label>
+        <select class="inp" id="ep-day"><option value="Segunda">Segunda</option><option value="Terça">Terça</option><option value="Quarta">Quarta</option><option value="Quinta">Quinta</option><option value="Sexta">Sexta</option><option value="Sábado">Sábado</option><option value="Domingo">Domingo</option></select>
+      </div>
+      <div class="field"><label class="lbl">Tipo</label>
+        <select class="inp" id="ep-type"><option value="musculacao">Musculação</option><option value="cardio">Cardio</option><option value="hiit">HIIT</option></select>
+      </div>
+    </div>
+    <div class="field"><label class="lbl">Exercícios atuais</label><div id="ep-ex-list"></div></div>
+    <div class="field"><label class="lbl">Adicionar exercícios</label>
+      <input class="pk-search" id="ep-srch" placeholder="Buscar..." type="text">
+      <div class="mu-filter" id="ep-mf"></div>
+      <div class="pk-list" id="ep-pk"></div>
+    </div>
+    <button class="btn btn-g" id="ep-btn" onclick="saveEditPlan()">Salvar alterações</button>
+  </div>
+</div>
+
+<!-- ══ MODAL: EXERCÍCIO PERSONALIZADO ══ -->
+<div class="ov" id="ov-customex">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Exercícios personalizados</div>
+    <div class="modal-sub">crie seus próprios exercícios</div>
+    <div class="field"><label class="lbl">Nome do exercício</label><input class="inp" id="cx-name" placeholder="ex: Rosca Spider, Face Pull..."></div>
+    <div class="g2">
+      <div class="field"><label class="lbl">Grupo muscular</label><input class="inp" id="cx-muscle" value="Personalizado" placeholder="ex: Bíceps"></div>
+      <div class="field"><label class="lbl">Tipo</label>
+        <select class="inp" id="cx-type"><option value="musculacao">Musculação</option><option value="cardio">Cardio</option><option value="hiit">HIIT</option></select>
+      </div>
+    </div>
+    <button class="btn btn-g" id="cx-btn" onclick="saveCustomEx()" style="margin-bottom:20px;">+ Adicionar exercício</button>
+    <div style="font-size:10.5px;color:var(--t4);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;font-weight:700;">Meus exercícios</div>
+    <div id="cx-list"></div>
+  </div>
+</div>
+
+<!-- ══ MODAL: EDITAR PERFIL ══ -->
+<div class="ov" id="ov-profile">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Editar perfil</div>
+    <div class="modal-sub">suas informações pessoais</div>
+    <div class="field"><label class="lbl">Nome completo</label><input class="inp" id="pe-name"></div>
+    <div class="g2">
+      <div class="field"><label class="lbl">Peso (kg)</label><input class="inp" id="pe-w" type="number"></div>
+      <div class="field"><label class="lbl">Altura (cm)</label><input class="inp" id="pe-h" type="number"></div>
+    </div>
+    <div class="field"><label class="lbl">Objetivo</label>
+      <select class="inp" id="pe-goal">
+        <option value="Hipertrofia">Hipertrofia muscular</option>
+        <option value="Emagrecimento">Emagrecimento</option>
+        <option value="Resistência">Resistência</option>
+        <option value="Força">Força máxima</option>
+        <option value="Condicionamento">Condicionamento geral</option>
+      </select>
+    </div>
+    <button class="btn btn-g" id="pe-btn" onclick="savePfEdit()">Salvar</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module" src="js/app.js"></script>
+
+</body>
+</html>
